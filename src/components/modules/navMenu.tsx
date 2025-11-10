@@ -31,6 +31,9 @@ function NavMenu() {
           <div className="py-3 layout-item px-4 cursor-pointer bg-[#ff0054] rounded flex items-center gap-4">
             <p className="text-white">Meu perfil</p>
           </div>
+          <div className="py-3 layout-item px-4 cursor-pointer rounded flex items-center gap-4">
+            <p className="text-white">Buscar perfil</p>
+          </div>
         </div>
         <div>
           <div className="w-full h-px bg-[#4d4d4d]" />

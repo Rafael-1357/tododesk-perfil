@@ -1,12 +1,15 @@
-import NavMenu from "./components/modules/navMenu"
-import UserProfile from "./components/modules/userProfile"
+import { BrowserRouter, Routes, Route } from "react-router";
+import Home from "./pages/home";
+import SearchProfile from "./pages/searchProfile";
 
 function App() {
   return (
-    <div className="flex min-h-svh max-h-svh min-w-svh overflow-hidden">
-      <NavMenu />
-      <UserProfile />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/search-profile" element={<SearchProfile />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

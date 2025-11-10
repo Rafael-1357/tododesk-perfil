@@ -21,9 +21,9 @@ function UserProfile() {
   };
 
   return (
-    <div className="max-h-svh overflow-y-auto relative w-full">
+    <div className="max-h-svh overflow-y-auto relative w-full bg-[#FAFAFA]">
       <Header />
-      <div className="w-full h-full p-8 bg-[#FAFAFA] flex flex-col gap-12">
+      <div className="w-full h-full p-8 flex flex-col gap-12">
         <ProfileHeader
           name={profileData.name}
           role={profileData.role}
