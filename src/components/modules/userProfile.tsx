@@ -1,23 +1,20 @@
-import { useState } from "react";
-import { ProfileHeader } from "./ProfileHeader"
+import { ProfileHeader } from "./ProfileHeader";
 import { MedalsSection } from "./MedalsSection";
 import { InterestsSection } from "./interestsSection";
 import { Header } from "./header";
+import type { UserProfileData } from "@/data/mockData.tsx";
+import { useGeneralStore } from "@/store/general";
 
-function UserProfile() {
+interface UserProfileProps {
+  user: UserProfileData;
+  isMe?: boolean;
+}
 
-  const [profileData, setProfileData] = useState({
-    name: "Rafael da Lapa Silveira",
-    role: "Desenvolvedor Front-End",
-    description: "Apaixonado por destrinchar problemas complexos e transformá-los em soluções elegantes e funcionais. Sou movido pela curiosidade, adorando aprender e dominar novas tecnologias, e tenho um forte compromisso em compartilhar todo esse conhecimento com a comunidade.",
-  });
+function UserProfile({ user, isMe = false }: UserProfileProps) {
+  const { isAdmin } = useGeneralStore();
 
   const handleProfileUpdate = (data: { name: string; description: string; avatarUrl?: string }) => {
-    setProfileData({
-      ...profileData,
-      name: data.name,
-      description: data.description,
-    });
+    console.log("Profile update logic here", data);
   };
 
   return (
@@ -25,16 +22,22 @@ function UserProfile() {
       <Header />
       <div className="w-full h-full p-8 flex flex-col gap-12">
         <ProfileHeader
-          name={profileData.name}
-          role={profileData.role}
-          description={profileData.description}
+          name={user.name}
+          role={user.role}
+          description={user.description}
+          avatarUrl={user.avatarUrl}
           onUpdate={handleProfileUpdate}
+          isEditable={isMe}
         />
-          <InterestsSection />
-          <MedalsSection />
+        <InterestsSection interests={user.interests} isEditable={isMe} />
+        <MedalsSection
+          userId={user.id}
+          medals={user.medals}
+          isEditable={isAdmin}
+        />
       </div>
     </div>
-  )
+  );
 }
 
-export default UserProfile
+export default UserProfile;

@@ -1,16 +1,35 @@
-
 import { create } from 'zustand';
+import { allUsers, type UserProfileData, type Medal } from '@/data/mockData.tsx';
 
 interface GeneralState {
-  count: number;
-  increment: () => void;
-  decrement: () => void;
+  isAdmin: boolean;
+  toggleAdmin: () => void;
+  users: UserProfileData[];
+  addMedalToUser: (userId: string, medal: Medal) => void;
+  removeMedalFromUser: (userId: string, medalIndex: number) => void;
 }
 
 export const useGeneralStore = create<GeneralState>((set) => ({
-  // Initialize your state
-  count: 0,
-  // Implement your actions
-  increment: () => set((state) => ({ count: state.count + 1 })),
-  decrement: () => set((state) => ({ count: state.count - 1 })),
+  isAdmin: false,
+  toggleAdmin: () => set((state) => ({ isAdmin: !state.isAdmin })),
+  
+  users: allUsers,
+
+  addMedalToUser: (userId, medal) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.id === userId
+          ? { ...user, medals: [...user.medals, medal] }
+          : user
+      ),
+    })),
+
+  removeMedalFromUser: (userId, medalIndex) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.id === userId
+          ? { ...user, medals: user.medals.filter((_, index) => index !== medalIndex) }
+          : user
+      ),
+    })),
 }));

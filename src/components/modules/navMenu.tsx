@@ -1,8 +1,22 @@
 import logo from "@/assets/nova_logo.svg"
 import wrench from "@/assets/wrench-solid.svg"
 import minsait from "@/assets/marca_minsait.svg"
+import { Link, useLocation } from "react-router"
+import { cn } from "@/lib/utils"
 
 function NavMenu() {
+  const location = useLocation()
+  const pathname = location.pathname
+
+  const navItems = [
+    { href: "/", label: "Meu perfil" },
+    { href: "/search-profile", label: "Buscar perfil" },
+  ]
+
+  const baseClasses = "py-3 layout-item px-4 cursor-pointer rounded flex items-center gap-4 transition-all"
+  const activeClasses = "bg-[#ff0054]"
+  const inactiveClasses = "hover:bg-[#5f1d3a]"
+
   return (
     <div className="flex ">
       <div className="min-h-svh w-20 bg-[#260717] flex flex-col items-center">
@@ -28,12 +42,20 @@ function NavMenu() {
             <h1 className="text-white text-xl">Perfil</h1>
             <svg fill="#fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1.5rem" height="1.5rem"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" /></svg>
           </div>
-          <div className="py-3 layout-item px-4 cursor-pointer bg-[#ff0054] rounded flex items-center gap-4">
-            <p className="text-white">Meu perfil</p>
-          </div>
-          <div className="py-3 layout-item px-4 cursor-pointer rounded flex items-center gap-4">
-            <p className="text-white">Buscar perfil</p>
-          </div>
+          
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={cn(
+                baseClasses,
+                pathname === item.href ? activeClasses : inactiveClasses
+              )}
+            >
+              <p className="text-white">{item.label}</p>
+            </Link>
+          ))}
+          
         </div>
         <div>
           <div className="w-full h-px bg-[#4d4d4d]" />

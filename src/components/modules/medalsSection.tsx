@@ -1,71 +1,89 @@
-import { Award, Trophy, Star, Medal, Target, Zap } from "lucide-react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import type { Medal } from "@/data/mockData.tsx";
+import { Button } from "@/components/ui/button";
+import { Plus, X } from "lucide-react";
+import { AddMedalModal } from "./addMedalModal";
+import { useGeneralStore } from "@/store/general";
 
 interface MedalProps {
-  icon: React.ReactNode;
+  icon: React.ElementType;
   title: string;
   description: string;
   color: string;
+  isEditable: boolean;
+  onRemove: () => void;
 }
 
-const MedalCard = ({ icon, title, description, color }: MedalProps) => (
-  <Card className="group gap-0 p-6 hover:shadow-glow transition-all duration-300 cursor-pointer border-border/50 bg-gradient-to-br from-card to-card/50">
+const MedalCard = ({ icon: Icon, title, description, color, isEditable, onRemove }: MedalProps) => (
+  <Card className="relative group gap-0 p-6 hover:shadow-glow transition-all duration-300 cursor-pointer border-border/50 bg-gradient-to-br from-card to-card/50">
+    {isEditable && (
+      <Button
+        variant="destructive"
+        size="icon"
+        className="absolute -top-2 -right-2 h-6 w-6 rounded-full z-10"
+        onClick={onRemove}
+      >
+        <X className="h-4 w-4 text-white" />
+      </Button>
+    )}
     <div className={`mb-4 w-12 p-3 rounded-xl shadow-elevated group-hover:scale-110 transition-transform duration-300 bg-gradient-to-br ${color}`}>
-      {icon}
+      <Icon className="h-6 w-6 text-white" />
     </div>
     <h3 className="font-semibold text-foreground mb-2">{title}</h3>
     <p className="text-sm text-muted-foreground">{description}</p>
   </Card>
 );
 
-export const MedalsSection = () => {
-  const medals = [
-    {
-      icon: <Trophy className="h-6 w-6 text-amber-100" />,
-      title: "Campeão",
-      description: "Ganhou o primeiro lugar nas olimpíadas de qualidade",
-      color: "from-amber-500 to-amber-600",
-    },
-    {
-      icon: <Star className="h-6 w-6 text-blue-100" />,
-      title: "Estrela do Mês",
-      description: "Melhor desempenho do mês de Maio",
-      color: "from-blue-500 to-blue-600",
-    },
-    {
-      icon: <Award className="h-6 w-6 text-purple-100" />,
-      title: "Expecialista",
-      description: "Concluiu 10 cursos avançados",
-      color: "from-purple-500 to-purple-600",
-    },
-    {
-      icon: <Medal className="h-6 w-6 text-green-100" />,
-      title: "Colecionador",
-      description: "Mais de 10 tramas de elegios",
-      color: "from-green-500 to-green-600",
-    },
-    {
-      icon: <Target className="h-6 w-6 text-red-100" />,
-      title: "Focado",
-      description: "3 meses seguidos com CSAT acima de 95%",
-      color: "from-red-500 to-red-600",
-    },
-    {
-      icon: <Zap className="h-6 w-6 text-yellow-100" />,
-      title: "Velocista",
-      description: "Menor TMA do trimestre",
-      color: "from-yellow-500 to-yellow-600",
-    },
-  ];
+interface MedalsSectionProps {
+  userId: string;
+  medals: Medal[];
+  isEditable?: boolean;
+}
+
+export const MedalsSection = ({ userId, medals, isEditable = false }: MedalsSectionProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { addMedalToUser, removeMedalFromUser } = useGeneralStore();
+
+  const handleSaveMedal = (newMedal: Medal) => {
+    addMedalToUser(userId, newMedal);
+    console.log("New medal added to global state:", newMedal);
+  };
+
+  const handleRemoveMedal = (index: number) => {
+    removeMedalFromUser(userId, index);
+  };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-foreground">Medalhas</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {medals.map((medal, index) => (
-          <MedalCard key={index} {...medal} />
-        ))}
+    <>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">Medalhas</h2>
+          {isEditable && (
+            <Button onClick={() => setIsModalOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Adicionar Medalha
+            </Button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {medals.map((medal, index) => (
+            <MedalCard
+              key={index}
+              {...medal}
+              isEditable={isEditable}
+              onRemove={() => handleRemoveMedal(index)}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+      
+      {isModalOpen && (
+        <AddMedalModal
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveMedal}
+        />
+      )}
+    </>
   );
 };
