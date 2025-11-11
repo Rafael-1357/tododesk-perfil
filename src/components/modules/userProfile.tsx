@@ -1,5 +1,5 @@
-import { ProfileHeader } from "./ProfileHeader";
-import { MedalsSection } from "./MedalsSection";
+import { ProfileHeader } from "./profileHeader";
+import { MedalsSection } from "./medalsSection";
 import { InterestsSection } from "./interestsSection";
 import { Header } from "./header";
 import type { UserProfileData } from "@/data/mockData.ts";
