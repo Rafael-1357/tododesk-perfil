@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { allUsers, type UserProfileData, type Medal } from '@/data/mockData.ts';
+import { allUsers, type UserProfileData, type Medal, type Badge } from '@/data/mockData.ts';
 
 interface GeneralState {
   isAdmin: boolean;
@@ -7,7 +7,8 @@ interface GeneralState {
   users: UserProfileData[];
   addMedalToUser: (userId: string, medal: Medal) => void;
   removeMedalFromUser: (userId: string, medalIndex: number) => void;
-  updateUserBadge: (userId: string, badge: { sigla: string; nome: string; }) => void;
+  addUserBadge: (userId: string, badge: Badge) => void;
+  removeUserBadge: (userId: string, badgeIndex: number) => void;
 }
 
 export const useGeneralStore = create<GeneralState>((set) => ({
@@ -34,10 +35,21 @@ export const useGeneralStore = create<GeneralState>((set) => ({
       ),
     })),
   
-  updateUserBadge: (userId, badge) =>
+  addUserBadge: (userId, badge) =>
     set((state) => ({
       users: state.users.map((user) =>
-        user.id === userId ? { ...user, badge: badge } : user
+        user.id === userId
+          ? { ...user, badges: [...(user.badges || []), badge] }
+          : user
+      ),
+    })),
+
+  removeUserBadge: (userId, badgeIndex) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.id === userId
+          ? { ...user, badges: (user.badges || []).filter((_, index) => index !== badgeIndex) }
+          : user
       ),
     })),
 }));

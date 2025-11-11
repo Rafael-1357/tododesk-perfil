@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Edit2, X, Check, PlusCircle } from "lucide-react";
+import { Edit2, X, Check, PlusCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import defaultAvatar from "@/assets/default-avatar.png";
-import { Badge } from "@/components/ui/badge";
+import { Badge as BadgeUI } from "@/components/ui/badge";
 import { AddBadgeModal } from "./addBadgeModal";
 import { useGeneralStore } from "@/store/general";
+import type { Badge } from "@/data/mockData.ts";
 
 interface ProfileHeaderProps {
   userId: string;
@@ -15,7 +16,7 @@ interface ProfileHeaderProps {
   role: string;
   description: string;
   avatarUrl?: string;
-  badge?: { sigla: string; nome: string; };
+  badges?: Badge[];
   onUpdate: (data: { name: string; description: string; avatarUrl?: string }) => void;
   isEditable?: boolean;
   isAdminView?: boolean;
@@ -27,7 +28,7 @@ export const ProfileHeader = ({
   role, 
   description, 
   avatarUrl, 
-  badge, 
+  badges = [], 
   onUpdate, 
   isEditable = false, 
   isAdminView = false 
@@ -36,7 +37,7 @@ export const ProfileHeader = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editDescription, setEditDescription] = useState(description);
   const [isBadgeModalOpen, setIsBadgeModalOpen] = useState(false);
-  const { updateUserBadge } = useGeneralStore();
+  const { addUserBadge, removeUserBadge } = useGeneralStore();
 
   const handleSave = () => {
     onUpdate({
@@ -53,9 +54,14 @@ export const ProfileHeader = ({
     setIsEditing(false);
   };
 
-  const handleSaveBadge = (newBadge: { sigla: string; nome: string; }) => {
-    updateUserBadge(userId, newBadge);
-    toast.success("Badge atualizado!");
+  const handleSaveBadge = (newBadge: Badge) => {
+    addUserBadge(userId, newBadge);
+    toast.success("Badge adicionado!");
+  };
+
+  const handleRemoveBadge = (index: number) => {
+    removeUserBadge(userId, index);
+    toast.success("Badge removido!");
   };
 
   const initials = name
@@ -63,6 +69,8 @@ export const ProfileHeader = ({
     .map((n) => n[0])
     .join("")
     .toUpperCase();
+
+  const badgeNames = badges.map(b => b.nome).join(', ');
 
   return (
     <>
@@ -79,13 +87,20 @@ export const ProfileHeader = ({
             {isEditing ? (
               <>
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h1 className="text-3xl font-bold text-foreground">{name}</h1>
-                    {badge && (
-                      <Badge variant="default" className="text-lg px-2.5 py-0.5">
-                        {badge.sigla}
-                      </Badge>
-                    )}
+                    {badges.map((badge, index) => (
+                      <div key={index} className="flex items-center gap-0.5">
+                        <BadgeUI className="rounded font-mono px-2.5 py-0.5 bg-[#480e2a] text-primary-foreground">
+                          {badge.sigla}
+                        </BadgeUI>
+                        {isAdminView && (
+                          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => handleRemoveBadge(index)}>
+                            <XCircle className="h-4 w-4 text-destructive" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
                     {isAdminView && (
                       <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setIsBadgeModalOpen(true)}>
                         <PlusCircle className="h-4 w-4 text-primary" />
@@ -93,7 +108,7 @@ export const ProfileHeader = ({
                     )}
                   </div>
                   <p className="text-muted-foreground text-sm mt-1">
-                    {role} {badge && `• ${badge.nome}`}
+                    {role} {badgeNames && `• ${badgeNames}`}
                   </p>
                 </div>
                 <Textarea
@@ -107,13 +122,20 @@ export const ProfileHeader = ({
             ) : (
               <>
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h1 className="text-3xl font-bold text-foreground">{name}</h1>
-                    {badge && (
-                      <Badge variant="default" className="text-lg px-2.5 py-0.5">
-                        {badge.sigla}
-                      </Badge>
-                    )}
+                    {badges.map((badge, index) => (
+                      <div key={index} className="flex items-center gap-0.5">
+                        <BadgeUI className="rounded font-mono px-2.5 py-0.5 bg-[#480e2a] text-primary-foreground">
+                          {badge.sigla}
+                        </BadgeUI>
+                        {isAdminView && (
+                          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => handleRemoveBadge(index)}>
+                            <XCircle className="h-4 w-4 text-destructive" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
                     {isAdminView && (
                       <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setIsBadgeModalOpen(true)}>
                         <PlusCircle className="h-4 w-4 text-primary" />
@@ -121,7 +143,7 @@ export const ProfileHeader = ({
                     )}
                   </div>
                   <p className="text-muted-foreground text-sm mt-1">
-                    {role} {badge && `• ${badge.nome}`}
+                    {role} {badgeNames && `• ${badgeNames}`}
                   </p>
                 </div>
                 <p className="text-foreground/80 leading-relaxed w-11/12">{description}</p>

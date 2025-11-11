@@ -1,5 +1,6 @@
 import { Award, Trophy, Star, Medal, Target, Zap, Code, Palette, Music, Book, Rocket, Heart, Cpu, Globe, Coffee, Gamepad2, Plane, Dumbbell, Film, Utensils } from "lucide-react";
-import defaultAvatar from "@/assets/default-avatar.png";
+import dalapa from "@/assets/default-avatar.png";
+import defaultAvatar from "@/assets/nova_logo.svg";
 
 export interface Interest {
   label: string;
@@ -13,6 +14,11 @@ export interface Medal {
   color: string;
 }
 
+export interface Badge {
+  sigla: string;
+  nome: string;
+}
+
 export interface UserProfileData {
   id: string;
   name: string;
@@ -21,10 +27,7 @@ export interface UserProfileData {
   description: string;
   interests: Interest[];
   medals: Medal[];
-  badge?: {
-    sigla: string;
-    nome: string;
-  };
+  badges?: Badge[];
 }
 
 const interestsMap: Record<string, Interest> = {
@@ -89,7 +92,7 @@ export const rafaelUser: UserProfileData = {
   id: "rafael-silveira",
   name: "Rafael da Lapa Silveira",
   role: "Desenvolvedor Front-End",
-  avatarUrl: defaultAvatar,
+  avatarUrl: dalapa,
   description: "Apaixonado por destrinchar problemas complexos e transformá-los em soluções elegantes e funcionais. Sou movido pela curiosidade, adorando aprender e dominar novas tecnologias, e tenho um forte compromisso em compartilhar todo esse conhecimento com a comunidade.",
   interests: [
     interestsMap.webDev,
@@ -109,6 +112,7 @@ export const rafaelUser: UserProfileData = {
     allMedals.focused,
     allMedals.sprinter,
   ],
+  badges: [],
 };
 
 export const otherUsers: UserProfileData[] = [
@@ -120,6 +124,7 @@ export const otherUsers: UserProfileData[] = [
     description: "Designer focada em experiências de usuário intuitivas e acessíveis.",
     interests: [interestsMap.uiUx, interestsMap.health, interestsMap.movies, interestsMap.cooking],
     medals: [allMedals.star, allMedals.expert],
+    badges: [],
   },
   {
     id: "bruno-gomes",
@@ -129,6 +134,7 @@ export const otherUsers: UserProfileData[] = [
     description: "Especialista em microserviços e arquitetura de dados em larga escala.",
     interests: [interestsMap.ai, interestsMap.coffee, interestsMap.gaming],
     medals: [allMedals.sprinter, allMedals.focused],
+    badges: [],
   },
   {
     id: "carla-dias",
@@ -138,6 +144,10 @@ export const otherUsers: UserProfileData[] = [
     description: "Liderando equipes ágeis para entregar software de alta qualidade no prazo.",
     interests: [interestsMap.reading, interestsMap.travel, interestsMap.fitness],
     medals: [allMedals.champion, allMedals.collector, allMedals.star],
+    badges: [
+      { sigla: "PMP", nome: "Project Master" },
+      { sigla: "CSM", nome: "Scrum Master" }
+    ],
   },
 ];
 
