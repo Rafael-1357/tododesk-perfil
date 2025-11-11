@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import type { Medal } from "@/data/mockData.tsx";
+import type { Medal } from "@/data/mockData.ts";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import { AddMedalModal } from "./addMedalModal";
@@ -69,7 +69,7 @@ export const MedalsSection = ({ userId, medals, isEditable = false }: MedalsSect
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {medals.map((medal, index) => (
             <MedalCard
-              key={index}
+              key={`${medal.title}-${index}`}
               {...medal}
               isEditable={isEditable}
               onRemove={() => handleRemoveMedal(index)}

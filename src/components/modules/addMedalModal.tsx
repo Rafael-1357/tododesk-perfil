@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Award, Trophy, Star, Medal, Target, Zap } from "lucide-react";
-import type { Medal as MedalType } from "@/data/mockData.tsx";
+import type { Medal as MedalType } from "@/data/mockData.ts";
 
 interface AddMedalModalProps {
   onClose: () => void;

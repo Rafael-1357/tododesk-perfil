@@ -21,6 +21,10 @@ export interface UserProfileData {
   description: string;
   interests: Interest[];
   medals: Medal[];
+  badge?: {
+    sigla: string;
+    nome: string;
+  };
 }
 
 const interestsMap: Record<string, Interest> = {

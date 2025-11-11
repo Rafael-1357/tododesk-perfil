@@ -2,7 +2,7 @@ import { ProfileHeader } from "./ProfileHeader";
 import { MedalsSection } from "./MedalsSection";
 import { InterestsSection } from "./interestsSection";
 import { Header } from "./header";
-import type { UserProfileData } from "@/data/mockData.tsx";
+import type { UserProfileData } from "@/data/mockData.ts";
 import { useGeneralStore } from "@/store/general";
 
 interface UserProfileProps {
@@ -22,12 +22,15 @@ function UserProfile({ user, isMe = false }: UserProfileProps) {
       <Header />
       <div className="w-full h-full p-8 flex flex-col gap-12">
         <ProfileHeader
+          userId={user.id}
           name={user.name}
           role={user.role}
           description={user.description}
           avatarUrl={user.avatarUrl}
+          badge={user.badge}
           onUpdate={handleProfileUpdate}
           isEditable={isMe}
+          isAdminView={isAdmin}
         />
         <InterestsSection interests={user.interests} isEditable={isMe} />
         <MedalsSection
