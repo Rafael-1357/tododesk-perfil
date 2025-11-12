@@ -1,6 +1,5 @@
 import { Award, Trophy, Star, Medal, Target, Zap, Code, Palette, Music, Book, Rocket, Heart, Cpu, Globe, Coffee, Gamepad2, Plane, Dumbbell, Film, Utensils } from "lucide-react";
-import dalapa from "@/assets/default-avatar.png";
-import defaultAvatar from "@/assets/nova_logo.svg";
+import defaultAvatar from "@/assets/default-avatar.png";
 
 export interface Interest {
   label: string;
@@ -19,6 +18,13 @@ export interface Badge {
   nome: string;
 }
 
+export interface Project {
+  title: string;
+  description: string;
+  tags: string[];
+  imageUrl?: string;
+}
+
 export interface UserProfileData {
   id: string;
   name: string;
@@ -28,6 +34,7 @@ export interface UserProfileData {
   interests: Interest[];
   medals: Medal[];
   badges?: Badge[];
+  projects?: Project[];
 }
 
 const interestsMap: Record<string, Interest> = {
@@ -92,7 +99,7 @@ export const rafaelUser: UserProfileData = {
   id: "rafael-silveira",
   name: "Rafael da Lapa Silveira",
   role: "Desenvolvedor Front-End",
-  avatarUrl: dalapa,
+  avatarUrl: defaultAvatar,
   description: "Apaixonado por destrinchar problemas complexos e transformá-los em soluções elegantes e funcionais. Sou movido pela curiosidade, adorando aprender e dominar novas tecnologias, e tenho um forte compromisso em compartilhar todo esse conhecimento com a comunidade.",
   interests: [
     interestsMap.webDev,
@@ -112,7 +119,13 @@ export const rafaelUser: UserProfileData = {
     allMedals.focused,
     allMedals.sprinter,
   ],
-  badges: [],
+  badges: [
+    { sigla: "S+", nome: "Sniper" }
+  ],
+  projects: [
+    { title: "Dashboard Interno", description: "Dashboard de métricas de performance e KPIs da equipe.", tags: ["React", "TypeScript"] },
+    { title: "Novo Portal do Cliente", description: "Interface para clientes acompanharem seus chamados.", tags: ["Angular", "Firebase"] },
+  ],
 };
 
 export const otherUsers: UserProfileData[] = [
@@ -125,6 +138,9 @@ export const otherUsers: UserProfileData[] = [
     interests: [interestsMap.uiUx, interestsMap.health, interestsMap.movies, interestsMap.cooking],
     medals: [allMedals.star, allMedals.expert],
     badges: [],
+    projects: [
+      { title: "App Mobile de Saúde", description: "App de acompanhamento de saúde mental.", tags: ["Figma"] },
+    ],
   },
   {
     id: "bruno-gomes",
@@ -135,6 +151,7 @@ export const otherUsers: UserProfileData[] = [
     interests: [interestsMap.ai, interestsMap.coffee, interestsMap.gaming],
     medals: [allMedals.sprinter, allMedals.focused],
     badges: [],
+    projects: [],
   },
   {
     id: "carla-dias",
@@ -147,6 +164,9 @@ export const otherUsers: UserProfileData[] = [
     badges: [
       { sigla: "PMP", nome: "Project Master" },
       { sigla: "CSM", nome: "Scrum Master" }
+    ],
+    projects: [
+      { title: "Migração Cloud", description: "Gerenciamento da migração de 3 sistemas para a AWS.", tags: ["Jira", "AWS"] },
     ],
   },
 ];

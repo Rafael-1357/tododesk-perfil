@@ -60,7 +60,7 @@ export const MedalsSection = ({ userId, medals, isEditable = false }: MedalsSect
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-foreground">Medalhas</h2>
           {isEditable && (
-            <Button onClick={() => setIsModalOpen(true)}>
+            <Button className="bg-[#480e2a]" onClick={() => setIsModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Adicionar Medalha
             </Button>

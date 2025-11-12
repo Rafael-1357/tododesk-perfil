@@ -56,14 +56,14 @@ function SearchProfileContent() {
               <Input
                 type="search"
                 placeholder="Buscar por nome, cargo ou interesses..."
-                className="pl-10 h-10 text-base md:text-sm"
+                className="pl-10 h-10 text-base md:text-sm bg-white"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <Select value={selectedRole} onValueChange={setSelectedRole}>
-              <SelectTrigger className="w-full sm:w-[200px] h-10">
+            <Select value={selectedRole} onValueChange={setSelectedRole} >
+              <SelectTrigger className="w-full sm:w-[200px] h-10 bg-white">
                 <SlidersHorizontal className="h-4 w-4 mr-2" />
                 <SelectValue />
               </SelectTrigger>

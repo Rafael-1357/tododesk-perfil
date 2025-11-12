@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Edit2, X, Check, PlusCircle, XCircle } from "lucide-react";
+import { Edit2, X, Check, PlusCircle, XCircle, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -74,8 +74,8 @@ export const ProfileHeader = ({
 
   return (
     <>
-      <div className="relative bg-white rounded-xl from-card to-card/50 p-8 shadow-lg backdrop-blur-sm border border-border/50">
-        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+      <div className="relative max-w-[500px] bg-white rounded-xl from-card to-card/50 p-8 shadow-lg backdrop-blur-sm border border-border/50">
+        <div className="flex flex-col gap-6 items-start md:items-center">
           <div className="relative group">
             <Avatar className="h-32 w-32 border-4 border-primary/20 shadow-lg">
               <AvatarImage src={avatarUrl || defaultAvatar} alt={name} />
@@ -146,7 +146,7 @@ export const ProfileHeader = ({
                     {role} {badgeNames && `• ${badgeNames}`}
                   </p>
                 </div>
-                <p className="text-foreground/80 leading-relaxed w-11/12">{description}</p>
+                <p className="text-foreground/80 leading-relaxed w-full">{description}</p>
               </>
             )}
           </div>

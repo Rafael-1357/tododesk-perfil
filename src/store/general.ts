@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { allUsers, type UserProfileData, type Medal, type Badge } from '@/data/mockData.ts';
+import { allUsers, type UserProfileData, type Medal, type Badge, type Project } from '@/data/mockData.ts';
 
 interface GeneralState {
   isAdmin: boolean;
@@ -9,6 +9,9 @@ interface GeneralState {
   removeMedalFromUser: (userId: string, medalIndex: number) => void;
   addUserBadge: (userId: string, badge: Badge) => void;
   removeUserBadge: (userId: string, badgeIndex: number) => void;
+  updateUserDescription: (userId: string, description: string) => void;
+  addProjectToUser: (userId: string, project: Project) => void;
+  removeProjectFromUser: (userId: string, projectIndex: number) => void;
 }
 
 export const useGeneralStore = create<GeneralState>((set) => ({
@@ -49,6 +52,31 @@ export const useGeneralStore = create<GeneralState>((set) => ({
       users: state.users.map((user) =>
         user.id === userId
           ? { ...user, badges: (user.badges || []).filter((_, index) => index !== badgeIndex) }
+          : user
+      ),
+    })),
+  
+  updateUserDescription: (userId, description) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.id === userId ? { ...user, description: description } : user
+      ),
+    })),
+
+  addProjectToUser: (userId, project) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.id === userId
+          ? { ...user, projects: [...(user.projects || []), project] }
+          : user
+      ),
+    })),
+
+  removeProjectFromUser: (userId, projectIndex) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.id === userId
+          ? { ...user, projects: (user.projects || []).filter((_, index) => index !== projectIndex) }
           : user
       ),
     })),
