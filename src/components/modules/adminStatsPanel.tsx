@@ -6,8 +6,9 @@ import {
   DrawerContent,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import type { UserStats } from "@/data/mockData.ts";
 
-const StatCard = ({ title, value, icon: Icon }: { title: string, value: string, icon: React.ElementType }) => (
+const StatCard = ({ title, value, icon: Icon }: { title: string, value: string | number, icon: React.ElementType }) => (
   <Card className="bg-card/80 backdrop-blur-sm">
     <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
@@ -19,7 +20,17 @@ const StatCard = ({ title, value, icon: Icon }: { title: string, value: string, 
   </Card>
 );
 
-export function AdminStatsPanel() {
+interface AdminStatsPanelProps {
+  stats?: UserStats;
+}
+
+export function AdminStatsPanel({ stats }: AdminStatsPanelProps) {
+
+  const data = {
+    feedbacks: stats?.feedbacks ?? "N/A",
+    desvios: stats?.desvios ?? "N/A",
+    adsMedia: stats?.adsMedia ?? "N/A",
+  };
 
   return (
     <Drawer direction="right">
@@ -37,17 +48,17 @@ export function AdminStatsPanel() {
           <h3 className="text-xl font-semibold">Painel Admin</h3>
           <StatCard 
             title="Feedbacks" 
-            value="12" 
+            value={data.feedbacks} 
             icon={BarChart3} 
           />
           <StatCard 
             title="Desvios" 
-            value="3" 
+            value={data.desvios} 
             icon={GitPullRequest} 
           />
           <StatCard 
             title="Média de % das 3 ultimas ADs" 
-            value="92.5%" 
+            value={data.adsMedia} 
             icon={Target} 
           />
         </div>

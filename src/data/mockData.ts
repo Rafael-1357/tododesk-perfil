@@ -25,6 +25,12 @@ export interface Project {
   imageUrl?: string;
 }
 
+export interface UserStats {
+  feedbacks: number;
+  desvios: number;
+  adsMedia: string;
+}
+
 export interface UserProfileData {
   id: string;
   name: string;
@@ -35,6 +41,7 @@ export interface UserProfileData {
   medals: Medal[];
   badges?: Badge[];
   projects?: Project[];
+  stats?: UserStats;
 }
 
 const interestsMap: Record<string, Interest> = {
@@ -126,6 +133,11 @@ export const rafaelUser: UserProfileData = {
     { title: "Dashboard Interno", description: "Dashboard de métricas de performance e KPIs da equipe.", tags: ["React", "TypeScript"] },
     { title: "Novo Portal do Cliente", description: "Interface para clientes acompanharem seus chamados.", tags: ["Angular", "Firebase"] },
   ],
+  stats: {
+    feedbacks: 12,
+    desvios: 3,
+    adsMedia: "92.5%",
+  },
 };
 
 export const otherUsers: UserProfileData[] = [
@@ -141,6 +153,11 @@ export const otherUsers: UserProfileData[] = [
     projects: [
       { title: "App Mobile de Saúde", description: "App de acompanhamento de saúde mental.", tags: ["Figma"] },
     ],
+    stats: {
+      feedbacks: 8,
+      desvios: 1,
+      adsMedia: "98.0%",
+    },
   },
   {
     id: "bruno-gomes",
@@ -152,6 +169,11 @@ export const otherUsers: UserProfileData[] = [
     medals: [allMedals.sprinter, allMedals.focused],
     badges: [],
     projects: [],
+    stats: {
+      feedbacks: 5,
+      desvios: 0,
+      adsMedia: "91.2%",
+    },
   },
   {
     id: "carla-dias",
@@ -168,6 +190,11 @@ export const otherUsers: UserProfileData[] = [
     projects: [
       { title: "Migração Cloud", description: "Gerenciamento da migração de 3 sistemas para a AWS.", tags: ["Jira", "AWS"] },
     ],
+    stats: {
+      feedbacks: 21,
+      desvios: 8,
+      adsMedia: "89.0%",
+    },
   },
 ];
 

@@ -23,7 +23,7 @@ function UserProfile({ user, isMe = false }: UserProfileProps) {
     <div className="relative w-full bg-[#FAFAFA] flex flex-col max-h-svh">
       <Header />
 
-      {isAdmin && <AdminStatsPanel />}
+      {isAdmin && <AdminStatsPanel stats={user.stats} />}
 
       <div className="flex flex-row gap-8 w-full p-8 overflow-hidden overflow-y-auto">
         <div className="w-[400px]">
