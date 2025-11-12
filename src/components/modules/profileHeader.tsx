@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Edit2, X, Check, PlusCircle, XCircle, Camera } from "lucide-react";
+import { Edit2, X, Check, PlusCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
