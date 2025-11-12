@@ -66,16 +66,23 @@ export const MedalsSection = ({ userId, medals, isEditable = false }: MedalsSect
             </Button>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {medals.map((medal, index) => (
-            <MedalCard
-              key={`${medal.title}-${index}`}
-              {...medal}
-              isEditable={isEditable}
-              onRemove={() => handleRemoveMedal(index)}
-            />
-          ))}
-        </div>
+
+        {medals.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {medals.map((medal, index) => (
+              <MedalCard
+                key={`${medal.title}-${index}`}
+                {...medal}
+                isEditable={isEditable}
+                onRemove={() => handleRemoveMedal(index)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center p-4 rounded-md border border-dashed bg-card/50">
+            <p className="text-sm text-muted-foreground">Nenhuma medalha adicionada ainda.</p>
+          </div>
+        )}
       </div>
       
       {isModalOpen && (

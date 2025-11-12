@@ -15,7 +15,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, isEditable, onRemove }: ProjectCardProps) => (
-  <Card className="relative group bg-card/50 py-0 max-h-80">
+  <div className="relative group">
     {isEditable && (
       <Button
         variant="destructive"
@@ -26,27 +26,29 @@ const ProjectCard = ({ project, isEditable, onRemove }: ProjectCardProps) => (
         <X className="h-4 w-4 text-white" />
       </Button>
     )}
+    
+    <Card className="bg-card/50 py-0 max-h-80 gap-0">
+      <img
+        src={project.imageUrl || defaultProjectImage}
+        alt={project.title}
+        className="h-40 w-full object-cover"
+      />
 
-    <img
-      src={project.imageUrl || defaultProjectImage}
-      alt={project.title}
-      className="h-full w-full object-cover rounded-t-xl"
-    />
-
-    <div className="p-6 space-y-4">
-      <div className="space-y-2 min-h-[80px]">
-        <CardTitle className="text-lg">{project.title}</CardTitle>
-        <CardContent className="p-0 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-          {project.description}
-        </CardContent>
+      <div className="p-6 space-y-4">
+        <div className="space-y-2 min-h-[80px]">
+          <CardTitle className="text-lg">{project.title}</CardTitle>
+          <CardContent className="p-0 text-sm text-muted-foreground leading-relaxed line-clamp-2">
+            {project.description}
+          </CardContent>
+        </div>
+        <CardFooter className="p-0 flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
+            <Badge key={tag} variant="secondary">{tag}</Badge>
+          ))}
+        </CardFooter>
       </div>
-      <CardFooter className="p-0 flex gap-2">
-        {project.tags.map((tag) => (
-          <Badge key={tag} variant="secondary">{tag}</Badge>
-        ))}
-      </CardFooter>
-    </div>
-  </Card>
+    </Card>
+  </div>
 );
 
 interface ProjectsSectionProps {
@@ -79,16 +81,23 @@ export const ProjectsSection = ({ userId, projects, isEditable = false }: Projec
             </Button>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={index}
-              project={project}
-              isEditable={isEditable}
-              onRemove={() => handleRemoveProject(index)}
-            />
-          ))}
-        </div>
+
+        {projects.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={index}
+                project={project}
+                isEditable={isEditable}
+                onRemove={() => handleRemoveProject(index)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center p-4 rounded-md border border-dashed bg-card/50">
+            <p className="text-sm text-muted-foreground">Nenhum projeto adicionado ainda.</p>
+          </div>
+        )}
       </div>
 
       {isModalOpen && (
