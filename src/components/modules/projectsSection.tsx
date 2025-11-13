@@ -7,49 +7,62 @@ import { useGeneralStore } from "@/store/general";
 import { AddProjectModal } from "./addProjectModal";
 import { Badge } from "@/components/ui/badge";
 import defaultProjectImage from "@/assets/nova_logo.svg";
+import { ProjectDetailsModal } from "./projectDetailsModal";
 
 interface ProjectCardProps {
   project: Project;
   isEditable: boolean;
   onRemove: () => void;
+  onClick: () => void;
 }
 
-const ProjectCard = ({ project, isEditable, onRemove }: ProjectCardProps) => (
-  <div className="relative group">
-    {isEditable && (
-      <Button
-        variant="destructive"
-        size="icon"
-        className="absolute -top-2 -right-2 h-6 w-6 rounded-full z-10"
-        onClick={onRemove}
-      >
-        <X className="h-4 w-4 text-white" />
-      </Button>
-    )}
-    
-    <Card className="bg-card/50 py-0 max-h-80 gap-0">
-      <img
-        src={project.imageUrl || defaultProjectImage}
-        alt={project.title}
-        className="h-40 w-full object-cover"
-      />
+const ProjectCard = ({ project, isEditable, onRemove, onClick }: ProjectCardProps) => {
+  const plainDescription = project.description.replace(/<[^>]+>/g, '');
 
-      <div className="p-6 space-y-4">
-        <div className="space-y-2 min-h-[80px]">
-          <CardTitle className="text-lg">{project.title}</CardTitle>
-          <CardContent className="p-0 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-            {project.description}
-          </CardContent>
-        </div>
-        <CardFooter className="p-0 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <Badge key={tag} variant="secondary">{tag}</Badge>
-          ))}
-        </CardFooter>
-      </div>
-    </Card>
-  </div>
-);
+  return (
+    <div className="relative group">
+      {isEditable && (
+        <Button
+          variant="destructive"
+          size="icon"
+          className="absolute -top-2 -right-2 h-6 w-6 rounded-full z-10"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+        >
+          <X className="h-4 w-4 text-white" />
+        </Button>
+      )}
+
+      <Card
+        className="bg-card/50 py-0 max-h-80 gap-0 cursor-pointer text-left"
+      >
+        <button onClick={onClick}>
+          <img
+            src={project.imageUrl || defaultProjectImage}
+            alt={project.title}
+            className="h-40 w-full object-cover"
+          />
+
+          <div className="p-6 space-y-4">
+            <div className="space-y-2 min-h-[80px]">
+              <CardTitle className="text-lg">{project.title}</CardTitle>
+              <CardContent className="p-0 text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                {plainDescription}
+              </CardContent>
+            </div>
+            <CardFooter className="p-0 flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">{tag}</Badge>
+              ))}
+            </CardFooter>
+          </div>
+        </button>
+      </Card>
+    </div>
+  );
+};
 
 interface ProjectsSectionProps {
   userId: string;
@@ -59,6 +72,7 @@ interface ProjectsSectionProps {
 
 export const ProjectsSection = ({ userId, projects, isEditable = false }: ProjectsSectionProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { addProjectToUser, removeProjectFromUser } = useGeneralStore();
 
   const handleSaveProject = (newProject: Project) => {
@@ -90,6 +104,7 @@ export const ProjectsSection = ({ userId, projects, isEditable = false }: Projec
                 project={project}
                 isEditable={isEditable}
                 onRemove={() => handleRemoveProject(index)}
+                onClick={() => setSelectedProject(project)}
               />
             ))}
           </div>
@@ -104,6 +119,13 @@ export const ProjectsSection = ({ userId, projects, isEditable = false }: Projec
         <AddProjectModal
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveProject}
+        />
+      )}
+
+      {selectedProject && (
+        <ProjectDetailsModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
         />
       )}
     </>

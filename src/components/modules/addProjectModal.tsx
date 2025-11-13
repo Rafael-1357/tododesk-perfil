@@ -2,20 +2,75 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { X, Image as ImageIcon } from "lucide-react";
+import { X, Image as ImageIcon, Bold, Italic, List, ListOrdered } from "lucide-react";
 import type { Project } from "@/data/mockData.ts";
+import { useEditor, EditorContent, type Editor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { toast } from "sonner";
 
 interface AddProjectModalProps {
   onClose: () => void;
   onSave: (project: Project) => void;
 }
 
+const RichTextEditorToolbar = ({ editor }: { editor: Editor | null }) => {
+  if (!editor) return null;
+
+  return (
+    <div className="flex items-center gap-1 rounded-md border border-input p-1 w-full flex-wrap">
+      <Button
+        type="button"
+        size="icon-sm"
+        variant={editor.isActive('bold') ? 'secondary' : 'ghost'}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+      >
+        <Bold className="h-4 w-4" />
+      </Button>
+      <Button
+        type="button"
+        size="icon-sm"
+        variant={editor.isActive('italic') ? 'secondary' : 'ghost'}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+      >
+        <Italic className="h-4 w-4" />
+      </Button>
+      <Button
+        type="button"
+        size="icon-sm"
+        variant={editor.isActive('bulletList') ? 'secondary' : 'ghost'}
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+      >
+        <List className="h-4 w-4" />
+      </Button>
+      <Button
+        type="button"
+        size="icon-sm"
+        variant={editor.isActive('orderedList') ? 'secondary' : 'ghost'}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <ListOrdered className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+};
+
 export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined);
+
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: '',
+    editorProps: {
+      attributes: {
+        class: 'ProseMirror'
+      }
+    },
+    onUpdate: () => {
+      // O estado não é mais atualizado no onUpdate, mas sim pego no handleSave
+    },
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,13 +84,21 @@ export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
   };
 
   const handleSave = () => {
-    if (!title || !description) return;
+    if (!editor) return;
+
+    const descriptionHtml = editor.getHTML();
+    const plainText = editor.getText().trim();
+
+    if (!title || plainText.length === 0) {
+      toast.error("Título e descrição são obrigatórios.");
+      return;
+    }
 
     const tagsArray = tags.split(',').map(t => t.trim()).filter(t => t.length > 0);
     
     onSave({
       title,
-      description,
+      description: descriptionHtml,
       tags: tagsArray,
       imageUrl: imagePreview,
     });
@@ -62,14 +125,9 @@ export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">Descrição</label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Ex: Dashboard para análise de métricas..."
-              rows={3}
-            />
+            <label className="text-sm font-medium">Descrição</label>
+            <RichTextEditorToolbar editor={editor} />
+            <EditorContent editor={editor} />
           </div>
           <div className="space-y-2">
             <label htmlFor="tag" className="text-sm font-medium">Tecnologias (separadas por vírgula)</label>

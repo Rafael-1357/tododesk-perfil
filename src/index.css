@@ -118,3 +118,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Estilos para o Tiptap */
+.ProseMirror {
+  /* Substitui a estilização do textarea.tsx */
+  min-height: 128px;
+  max-height: 192px; 
+  overflow-y: auto; 
+  @apply w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:border-ring focus-visible:ring-ring/50;
+}
+
+.ProseMirror > * + * {
+  @apply mt-4;
+}
+
+/* CORREÇÃO AQUI: Removido list-inside e separado UL de OL */
+.ProseMirror ul {
+  @apply list-disc pl-6; /* pl-6 dá espaço para a bolinha ficar fora */
+}
+
+.ProseMirror ol {
+  @apply list-decimal pl-6;
+}
+
+/* Estilos para o conteúdo renderizado (para ficar igual ao editor) */
+.project-content > * + * {
+  @apply mt-4;
+}
+
+.project-content ul {
+  @apply list-disc pl-6;
+}
+
+.project-content ol {
+  @apply list-decimal pl-6;
+}
