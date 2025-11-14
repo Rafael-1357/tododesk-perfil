@@ -47,9 +47,9 @@ function UserProfile({ user, isMe = false }: UserProfileProps) {
             medals={user.medals}
             isEditable={isAdmin}
           />
+          {/* A prop 'projects' foi removida abaixo */}
           <ProjectsSection
             userId={user.id}
-            projects={user.projects || []}
             isEditable={isMe}
           />
         </div>
