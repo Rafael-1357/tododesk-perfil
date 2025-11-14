@@ -133,7 +133,7 @@ export function AddProjectModal({ onClose, onSave, ownerId }: AddProjectModalPro
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <Card className="w-full max-w-lg shadow-2xl">
-        <CardHeader className="flex-row items-center justify-between">
+        <CardHeader className="flex w-full flex-row items-center justify-between">
           <CardTitle>Adicionar Novo Projeto</CardTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
