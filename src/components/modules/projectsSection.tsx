@@ -14,9 +14,10 @@ interface ProjectCardProps {
   isEditable: boolean;
   onRemove: () => void;
   onClick: () => void;
+  isCoCreator: boolean;
 }
 
-const ProjectCard = ({ project, isEditable, onRemove, onClick }: ProjectCardProps) => {
+const ProjectCard = ({ project, isEditable, onRemove, onClick, isCoCreator }: ProjectCardProps) => {
   const plainDescription = project.description.replace(/<[^>]+>/g, '');
 
   return (
@@ -47,7 +48,12 @@ const ProjectCard = ({ project, isEditable, onRemove, onClick }: ProjectCardProp
 
           <div className="p-6 space-y-4">
             <div className="space-y-2 min-h-[80px]">
-              <CardTitle className="text-lg">{project.title}</CardTitle>
+              <CardTitle className="text-lg flex items-center justify-between">
+                <span>{project.title}</span>
+                {isCoCreator && (
+                  <Badge variant="secondary" className="font-medium text-xs">Cocriador</Badge>
+                )}
+              </CardTitle>
               <CardContent className="p-0 text-sm text-muted-foreground leading-relaxed line-clamp-2">
                 {plainDescription}
               </CardContent>
@@ -66,21 +72,28 @@ const ProjectCard = ({ project, isEditable, onRemove, onClick }: ProjectCardProp
 
 interface ProjectsSectionProps {
   userId: string;
-  projects: Project[];
   isEditable?: boolean;
 }
 
-export const ProjectsSection = ({ userId, projects, isEditable = false }: ProjectsSectionProps) => {
+export const ProjectsSection = ({ userId, isEditable = false }: ProjectsSectionProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const { addProjectToUser, removeProjectFromUser } = useGeneralStore();
+  
+  const { addProject, removeProject } = useGeneralStore();
+  const allProjects = useGeneralStore((state) => state.projects);
 
-  const handleSaveProject = (newProject: Project) => {
-    addProjectToUser(userId, newProject);
+  const userProjects = allProjects.filter(
+    (project) => 
+      project.ownerId === userId || 
+      project.coCreatorIds.includes(userId)
+  );
+
+  const handleSaveProject = (newProjectData: Omit<Project, 'id'>) => {
+    addProject(newProjectData);
   };
 
-  const handleRemoveProject = (index: number) => {
-    removeProjectFromUser(userId, index);
+  const handleRemoveProject = (projectId: string) => {
+    removeProject(projectId);
   };
 
   return (
@@ -96,15 +109,16 @@ export const ProjectsSection = ({ userId, projects, isEditable = false }: Projec
           )}
         </div>
 
-        {projects.length > 0 ? (
+        {userProjects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {projects.map((project, index) => (
+            {userProjects.map((project) => (
               <ProjectCard
-                key={index}
+                key={project.id}
                 project={project}
-                isEditable={isEditable}
-                onRemove={() => handleRemoveProject(index)}
+                isEditable={project.ownerId === userId && isEditable}
+                onRemove={() => handleRemoveProject(project.id)}
                 onClick={() => setSelectedProject(project)}
+                isCoCreator={project.ownerId !== userId}
               />
             ))}
           </div>
@@ -117,6 +131,7 @@ export const ProjectsSection = ({ userId, projects, isEditable = false }: Projec
 
       {isModalOpen && (
         <AddProjectModal
+          ownerId={userId}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveProject}
         />

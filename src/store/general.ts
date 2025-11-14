@@ -1,17 +1,25 @@
 import { create } from 'zustand';
-import { allUsers, type UserProfileData, type Medal, type Badge, type Project } from '@/data/mockData.ts';
+import { 
+  allUsers, 
+  allProjects,
+  type UserProfileData, 
+  type Medal, 
+  type Badge, 
+  type Project 
+} from '@/data/mockData.ts';
 
 interface GeneralState {
   isAdmin: boolean;
   toggleAdmin: () => void;
   users: UserProfileData[];
+  projects: Project[];
   addMedalToUser: (userId: string, medal: Medal) => void;
   removeMedalFromUser: (userId: string, medalIndex: number) => void;
   addUserBadge: (userId: string, badge: Badge) => void;
   removeUserBadge: (userId: string, badgeIndex: number) => void;
   updateUserDescription: (userId: string, description: string) => void;
-  addProjectToUser: (userId: string, project: Project) => void;
-  removeProjectFromUser: (userId: string, projectIndex: number) => void;
+  addProject: (newProjectData: Omit<Project, 'id'>) => void;
+  removeProject: (projectId: string) => void;
 }
 
 export const useGeneralStore = create<GeneralState>((set) => ({
@@ -19,6 +27,7 @@ export const useGeneralStore = create<GeneralState>((set) => ({
   toggleAdmin: () => set((state) => ({ isAdmin: !state.isAdmin })),
   
   users: allUsers,
+  projects: allProjects,
 
   addMedalToUser: (userId, medal) =>
     set((state) => ({
@@ -63,21 +72,16 @@ export const useGeneralStore = create<GeneralState>((set) => ({
       ),
     })),
 
-  addProjectToUser: (userId, project) =>
+  addProject: (newProjectData) =>
     set((state) => ({
-      users: state.users.map((user) =>
-        user.id === userId
-          ? { ...user, projects: [...(user.projects || []), project] }
-          : user
-      ),
+      projects: [
+        ...state.projects,
+        { ...newProjectData, id: `proj_${Date.now()}` },
+      ],
     })),
 
-  removeProjectFromUser: (userId, projectIndex) =>
+  removeProject: (projectId) =>
     set((state) => ({
-      users: state.users.map((user) =>
-        user.id === userId
-          ? { ...user, projects: (user.projects || []).filter((_, index) => index !== projectIndex) }
-          : user
-      ),
+      projects: state.projects.filter((p) => p.id !== projectId),
     })),
 }));

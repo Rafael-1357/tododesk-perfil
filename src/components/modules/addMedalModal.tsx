@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Award, Trophy, Star, Medal, Target, Zap } from "lucide-react";
 import type { Medal as MedalType } from "@/data/mockData.ts";
+import { cn } from "@/lib/utils";
 
 interface AddMedalModalProps {
   onClose: () => void;
@@ -21,6 +22,16 @@ const iconMap = {
 };
 
 type IconKey = keyof typeof iconMap;
+
+const gradientPalette = [
+  { name: "Cinza", classes: "from-gray-500 to-gray-600" },
+  { name: "Vermelho", classes: "from-red-500 to-red-600" },
+  { name: "Âmbar", classes: "from-amber-500 to-amber-600" },
+  { name: "Amarelo", classes: "from-yellow-500 to-yellow-600" },
+  { name: "Verde", classes: "from-green-500 to-green-600" },
+  { name: "Azul", classes: "from-blue-500 to-blue-600" },
+  { name: "Roxo", classes: "from-purple-500 to-purple-600" },
+];
 
 export function AddMedalModal({ onClose, onSave }: AddMedalModalProps) {
   const [title, setTitle] = useState("");
@@ -69,13 +80,24 @@ export function AddMedalModal({ onClose, onSave }: AddMedalModalProps) {
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="color" className="text-sm font-medium">Cor (Tailwind)</label>
-            <Input
-              id="color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              placeholder="Ex: from-blue-500 to-blue-600"
-            />
+            <label className="text-sm font-medium">Cor</label>
+            <div className="grid grid-cols-7 gap-2">
+              {gradientPalette.map((palette) => (
+                <button
+                  key={palette.name}
+                  type="button"
+                  title={palette.name}
+                  className={cn(
+                    "h-8 w-8 rounded-full border bg-gradient-to-br transition-all",
+                    palette.classes,
+                    color === palette.classes 
+                      ? "ring-2 ring-primary ring-offset-2" 
+                      : "hover:scale-110"
+                  )}
+                  onClick={() => setColor(palette.classes)}
+                />
+              ))}
+            </div>
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Ícone</label>

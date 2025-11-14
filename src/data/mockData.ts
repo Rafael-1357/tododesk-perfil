@@ -19,6 +19,9 @@ export interface Badge {
 }
 
 export interface Project {
+  id: string;
+  ownerId: string;
+  coCreatorIds: string[];
   title: string;
   description: string;
   tags: string[];
@@ -40,7 +43,6 @@ export interface UserProfileData {
   interests: Interest[];
   medals: Medal[];
   badges?: Badge[];
-  projects?: Project[];
   stats?: UserStats;
 }
 
@@ -102,6 +104,41 @@ const allMedals = {
   },
 };
 
+export const allProjects: Project[] = [
+  { 
+    id: "p1",
+    ownerId: "rafael-silveira",
+    coCreatorIds: [],
+    title: "Dashboard Interno", 
+    description: "Dashboard de métricas de performance e KPIs da equipe.", 
+    tags: ["React", "TypeScript"] 
+  },
+  { 
+    id: "p2",
+    ownerId: "rafael-silveira",
+    coCreatorIds: ["ana-clara"],
+    title: "Novo Portal do Cliente", 
+    description: "Interface para clientes acompanharem seus chamados.", 
+    tags: ["Angular", "Firebase"] 
+  },
+  {
+    id: "p3",
+    ownerId: "ana-clara",
+    coCreatorIds: [],
+    title: "App Mobile de Saúde", 
+    description: "App de acompanhamento de saúde mental.", 
+    tags: ["Figma"] 
+  },
+  {
+    id: "p4",
+    ownerId: "carla-dias",
+    coCreatorIds: ["rafael-silveira"],
+    title: "Migração Cloud", 
+    description: "Gerenciamento da migração de 3 sistemas para a AWS.", 
+    tags: ["Jira", "AWS"] 
+  },
+];
+
 export const rafaelUser: UserProfileData = {
   id: "rafael-silveira",
   name: "Rafael da Lapa Silveira",
@@ -129,10 +166,6 @@ export const rafaelUser: UserProfileData = {
   badges: [
     { sigla: "S+", nome: "Sniper" }
   ],
-  projects: [
-    { title: "Dashboard Interno", description: "Dashboard de métricas de performance e KPIs da equipe.", tags: ["React", "TypeScript"] },
-    { title: "Novo Portal do Cliente", description: "Interface para clientes acompanharem seus chamados.", tags: ["Angular", "Firebase"] },
-  ],
   stats: {
     feedbacks: 12,
     desvios: 3,
@@ -150,9 +183,6 @@ export const otherUsers: UserProfileData[] = [
     interests: [interestsMap.uiUx, interestsMap.health, interestsMap.movies, interestsMap.cooking],
     medals: [allMedals.star, allMedals.expert],
     badges: [],
-    projects: [
-      { title: "App Mobile de Saúde", description: "App de acompanhamento de saúde mental.", tags: ["Figma"] },
-    ],
     stats: {
       feedbacks: 8,
       desvios: 1,
@@ -168,7 +198,6 @@ export const otherUsers: UserProfileData[] = [
     interests: [interestsMap.ai, interestsMap.coffee, interestsMap.gaming],
     medals: [allMedals.sprinter, allMedals.focused],
     badges: [],
-    projects: [],
     stats: {
       feedbacks: 5,
       desvios: 0,
@@ -186,9 +215,6 @@ export const otherUsers: UserProfileData[] = [
     badges: [
       { sigla: "PMP", nome: "Project Master" },
       { sigla: "CSM", nome: "Scrum Master" }
-    ],
-    projects: [
-      { title: "Migração Cloud", description: "Gerenciamento da migração de 3 sistemas para a AWS.", tags: ["Jira", "AWS"] },
     ],
     stats: {
       feedbacks: 21,

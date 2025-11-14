@@ -7,10 +7,14 @@ import type { Project } from "@/data/mockData.ts";
 import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { toast } from "sonner";
+import { useGeneralStore } from "@/store/general";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 interface AddProjectModalProps {
   onClose: () => void;
-  onSave: (project: Project) => void;
+  onSave: (project: Omit<Project, 'id'>) => void;
+  ownerId: string;
 }
 
 const RichTextEditorToolbar = ({ editor }: { editor: Editor | null }) => {
@@ -54,10 +58,21 @@ const RichTextEditorToolbar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
-export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
+export function AddProjectModal({ onClose, onSave, ownerId }: AddProjectModalProps) {
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState("");
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined);
+  const [coCreatorIds, setCoCreatorIds] = useState<string[]>([]);
+  
+  const allUsers = useGeneralStore((state) => state.users);
+  
+  const selectableUsers = allUsers.filter(
+    user => user.id !== ownerId && !coCreatorIds.includes(user.id)
+  );
+  
+  const selectedUsers = allUsers.filter(user => 
+    coCreatorIds.includes(user.id)
+  );
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -67,9 +82,7 @@ export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
         class: 'ProseMirror'
       }
     },
-    onUpdate: () => {
-      // O estado não é mais atualizado no onUpdate, mas sim pego no handleSave
-    },
+    onUpdate: () => {},
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +94,16 @@ export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleSelectCoCreator = (userId: string) => {
+    if (userId && !coCreatorIds.includes(userId)) {
+      setCoCreatorIds([...coCreatorIds, userId]);
+    }
+  };
+
+  const handleRemoveCoCreator = (userId: string) => {
+    setCoCreatorIds(coCreatorIds.filter(id => id !== userId));
   };
 
   const handleSave = () => {
@@ -101,6 +124,8 @@ export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
       description: descriptionHtml,
       tags: tagsArray,
       imageUrl: imagePreview,
+      ownerId: ownerId,
+      coCreatorIds: coCreatorIds,
     });
     onClose();
   };
@@ -138,6 +163,37 @@ export function AddProjectModal({ onClose, onSave }: AddProjectModalProps) {
               placeholder="Ex: React, TypeScript, Tailwind"
             />
           </div>
+
+          <div className="space-y-2">
+            <label htmlFor="cocreators" className="text-sm font-medium">Cocriadores</label>
+            <Select onValueChange={handleSelectCoCreator} value="">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecionar cocriadores..." />
+              </SelectTrigger>
+              <SelectContent>
+                {selectableUsers.length > 0 ? (
+                  selectableUsers.map(user => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>Nenhum usuário disponível</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {selectedUsers.map(user => (
+                <Badge key={user.id} variant="secondary" className="flex items-center gap-1">
+                  {user.name}
+                  <button type="button" onClick={() => handleRemoveCoCreator(user.id)} className="ml-1 hover:text-destructive">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label htmlFor="image" className="text-sm font-medium">Imagem do Projeto</label>
             <Input
